@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PhotoLogger.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FlightLogBaseDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%HOMEPATH%\Documents\FlightLog</Value>
+    </Setting>
+    <Setting Name="EDPhotoDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%HOMEPATH%\Pictures\Frontier Developments\Elite Dangerous</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
