@@ -18,7 +18,7 @@ The default locations are (respectively):
 
 This is how _I_ use it.
 
-# Capturing where I've been - by capturing the screen on jump in / out I can review where I went and what happened
-# Capturing incidents - Been interdicted? Hit F10 to capture the event so you can write up abot how the encounter went.
-# Travel times - You can see the timestamp for each screen shot so it's really easy to then work out how long it took to get between two places
-# Recording Trades - Grab a screenshot at the purchase and sale ends to look at later to work out your profits
+1. Capturing where I've been - by capturing the screen on jump in / out I can review where I went and what happened
+2. Capturing incidents - Been interdicted? Hit F10 to capture the event so you can write up abot how the encounter went.
+3. Travel times - You can see the timestamp for each screen shot so it's really easy to then work out how long it took to get between two places
+4. Recording Trades - Grab a screenshot at the purchase and sale ends to look at later to work out your profits
