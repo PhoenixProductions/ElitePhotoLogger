@@ -85,7 +85,10 @@ namespace PhotoLogger
         }
         void SaveLog()
         {
-            if (EN.Mode == Evernote.ENManager.EverNoteMode.Disabled)
+            this.BtnSaveLogEntry.Enabled = false;
+            UploadingProgress.Visible = true;
+            
+            //we always write a local text log at present
             {
                 string _logdir = System.IO.Path.Combine(
                     Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir),
@@ -118,12 +121,18 @@ namespace PhotoLogger
                 f.WriteLine(new string('=', TxtLogTitle.Text.Length));
                 f.WriteLine(TxtEntry.Text);
                 f.Close();
+
+            }
+            if (EN.Mode != Evernote.ENManager.EverNoteMode.Disabled){ 
+                backgroundWorker1.RunWorkerAsync();
+                //this.backgroundWorker1_RunWorkerCompleted(this, new RunWorkerCompletedEventArgs(null, null, false));
+            }
+            else
+            {
+                UploadingProgress.Visible = false;
+                this.BtnSaveLogEntry.Enabled = true;
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();
-            }
-            if (EN.Mode != Evernote.ENManager.EverNoteMode.Disabled)
-            {
-                EN.SaveLog(TxtLogTitle.Text, TxtEntry.Text);
             }
             /*if (RemoveOnSave.Checked) {
                 foreach (PhotoListItem i in ListPhotos.Items)
@@ -139,6 +148,7 @@ namespace PhotoLogger
                 }
                 UpdateListOfPhotos();
             }*/
+
 
         }
         private void ListPhotos_SelectedIndexChanged(object sender, EventArgs e)
@@ -165,6 +175,38 @@ namespace PhotoLogger
         {
             SaveLog();
         }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (EN.Mode != Evernote.ENManager.EverNoteMode.Disabled)
+            {
+                if (ListPhotos.CheckedItems.Count > 0)
+                {
+                    List<string> paths = new List<string>();
+                    foreach (PhotoListItem i in ListPhotos.CheckedItems)
+                    {
+                        paths.Add(i.Fullpath);
+                    }
+                    EN.SaveLog(TxtLogTitle.Text, TxtEntry.Text, paths.ToArray());
+                }
+                else
+                {
+                    EN.SaveLog(TxtLogTitle.Text, TxtEntry.Text);
+                }
+                //TODO allow selected screenshots to be saved along side
+            }
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            
+            UploadingProgress.Visible = false;
+            this.BtnSaveLogEntry.Enabled = true;
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
+        }
+
+
     }
     class PhotoListItem
     {

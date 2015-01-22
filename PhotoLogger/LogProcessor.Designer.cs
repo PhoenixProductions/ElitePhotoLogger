@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.ListPhotos = new System.Windows.Forms.CheckedListBox();
             this.RemoveOnSave = new System.Windows.Forms.CheckBox();
-            this.ListPhotos = new System.Windows.Forms.ListBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -40,6 +40,9 @@
             this.BtnSaveLogEntry = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.LogDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.Statusbar = new System.Windows.Forms.StatusStrip();
+            this.UploadingProgress = new System.Windows.Forms.ToolStripProgressBar();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -49,6 +52,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.Statusbar.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -56,47 +60,45 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(0, 95);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 74);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.RemoveOnSave);
             this.splitContainer1.Panel1.Controls.Add(this.ListPhotos);
+            this.splitContainer1.Panel1.Controls.Add(this.RemoveOnSave);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
-            this.splitContainer1.Size = new System.Drawing.Size(919, 533);
+            this.splitContainer1.Size = new System.Drawing.Size(919, 529);
             this.splitContainer1.SplitterDistance = 132;
             this.splitContainer1.TabIndex = 0;
-            // 
-            // RemoveOnSave
-            // 
-            this.RemoveOnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.RemoveOnSave.AutoSize = true;
-            this.RemoveOnSave.Enabled = false;
-            this.RemoveOnSave.Location = new System.Drawing.Point(12, 504);
-            this.RemoveOnSave.Name = "RemoveOnSave";
-            this.RemoveOnSave.Size = new System.Drawing.Size(117, 17);
-            this.RemoveOnSave.TabIndex = 1;
-            this.RemoveOnSave.Text = "Remove On Save?";
-            this.RemoveOnSave.UseVisualStyleBackColor = true;
             // 
             // ListPhotos
             // 
             this.ListPhotos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ListPhotos.DisplayMember = "Timestamp";
             this.ListPhotos.FormattingEnabled = true;
-            this.ListPhotos.Location = new System.Drawing.Point(1, 1);
+            this.ListPhotos.Location = new System.Drawing.Point(3, 3);
             this.ListPhotos.Name = "ListPhotos";
-            this.ListPhotos.Size = new System.Drawing.Size(129, 485);
-            this.ListPhotos.TabIndex = 0;
-            this.ListPhotos.ValueMember = "Fullpath";
+            this.ListPhotos.Size = new System.Drawing.Size(127, 469);
+            this.ListPhotos.TabIndex = 2;
             this.ListPhotos.SelectedIndexChanged += new System.EventHandler(this.ListPhotos_SelectedIndexChanged);
+            // 
+            // RemoveOnSave
+            // 
+            this.RemoveOnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.RemoveOnSave.AutoSize = true;
+            this.RemoveOnSave.Enabled = false;
+            this.RemoveOnSave.Location = new System.Drawing.Point(12, 500);
+            this.RemoveOnSave.Name = "RemoveOnSave";
+            this.RemoveOnSave.Size = new System.Drawing.Size(117, 17);
+            this.RemoveOnSave.TabIndex = 1;
+            this.RemoveOnSave.Text = "Remove On Save?";
+            this.RemoveOnSave.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
             // 
@@ -113,8 +115,8 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.label1);
             this.splitContainer2.Panel2.Controls.Add(this.TxtEntry);
-            this.splitContainer2.Size = new System.Drawing.Size(783, 533);
-            this.splitContainer2.SplitterDistance = 335;
+            this.splitContainer2.Size = new System.Drawing.Size(783, 529);
+            this.splitContainer2.SplitterDistance = 332;
             this.splitContainer2.TabIndex = 3;
             // 
             // pictureBox1
@@ -122,7 +124,7 @@
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(783, 335);
+            this.pictureBox1.Size = new System.Drawing.Size(783, 332);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -144,7 +146,7 @@
             this.TxtEntry.Location = new System.Drawing.Point(17, 26);
             this.TxtEntry.Multiline = true;
             this.TxtEntry.Name = "TxtEntry";
-            this.TxtEntry.Size = new System.Drawing.Size(751, 156);
+            this.TxtEntry.Size = new System.Drawing.Size(751, 155);
             this.TxtEntry.TabIndex = 2;
             // 
             // label2
@@ -194,11 +196,34 @@
             this.LogDatePicker.Size = new System.Drawing.Size(141, 20);
             this.LogDatePicker.TabIndex = 5;
             // 
+            // Statusbar
+            // 
+            this.Statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.UploadingProgress});
+            this.Statusbar.Location = new System.Drawing.Point(0, 606);
+            this.Statusbar.Name = "Statusbar";
+            this.Statusbar.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.Statusbar.Size = new System.Drawing.Size(919, 22);
+            this.Statusbar.TabIndex = 6;
+            // 
+            // UploadingProgress
+            // 
+            this.UploadingProgress.Name = "UploadingProgress";
+            this.UploadingProgress.Size = new System.Drawing.Size(180, 16);
+            this.UploadingProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.UploadingProgress.Visible = false;
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
             // LogProcessor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(919, 628);
+            this.Controls.Add(this.Statusbar);
             this.Controls.Add(this.LogDatePicker);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.BtnSaveLogEntry);
@@ -206,7 +231,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.splitContainer1);
             this.Name = "LogProcessor";
-            this.Text = "LogProcessor";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Write Log Entry";
             this.Load += new System.EventHandler(this.LogProcessor_Load);
             this.Shown += new System.EventHandler(this.LogProcessor_Shown);
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -220,6 +247,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Statusbar.ResumeLayout(false);
+            this.Statusbar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,7 +257,6 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListBox ListPhotos;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TextBox TxtEntry;
         private System.Windows.Forms.Label label1;
@@ -239,5 +267,9 @@
         private System.Windows.Forms.CheckBox RemoveOnSave;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DateTimePicker LogDatePicker;
+        private System.Windows.Forms.CheckedListBox ListPhotos;
+        private System.Windows.Forms.StatusStrip Statusbar;
+        private System.Windows.Forms.ToolStripProgressBar UploadingProgress;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

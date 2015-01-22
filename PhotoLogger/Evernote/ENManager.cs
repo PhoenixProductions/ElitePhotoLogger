@@ -78,7 +78,7 @@ namespace PhotoLogger.Evernote
         {
             this.SaveLog(title, content, null);
         }
-        public void SaveLog(string title, string content, System.Drawing.Image[] attachments) {
+        public void SaveLog(string title, string content, string[] attachmentPaths) {
             ENNote n = new ENNote();
             string targetNotebook = PhotoLogger.Properties.Settings.Default.ENNotebook;
             ENNotebook nb = ENSession.SharedSession.ListNotebooks().Where(b => b.Name == targetNotebook).FirstOrDefault();
@@ -90,11 +90,38 @@ namespace PhotoLogger.Evernote
 
             n.Title = title;
             n.Content = ENNoteContent.NoteContentWithString(content);
-            if (attachments != null && attachments.Length > 0)
+            if (attachmentPaths != null && attachmentPaths.Length > 0)
             {
-                foreach (System.Drawing.Image i in attachments){
-                    ENResource r = new ENResource(i);
+                foreach (string fp in attachmentPaths){
+                    System.Drawing.Image i = System.Drawing.Image.FromFile(fp);
+                    
+                     //This was an attempt to do an on-the-fly resize
+                    float aspect = i.HorizontalResolution / i.VerticalResolution;
+                    int newWidth = (int)(800 * aspect);
+                    System.Drawing.Rectangle dr = new System.Drawing.Rectangle(0, 0, 800, newWidth);    //probably want to make this an option
+                    System.Drawing.Bitmap i2 = new System.Drawing.Bitmap(800, newWidth);
+                    i2.SetResolution(i.HorizontalResolution, i.VerticalResolution);
+                    using (var graphics = System.Drawing.Graphics.FromImage(i2))
+                    {
+                        graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                        graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                        graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                        using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
+                        {
+                            wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                            graphics.DrawImage(i, dr, 0, 0, i.Width,i.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
+                        }
+                    }
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                    i2.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    //ENResource r = new ENResource(i);
+                    ENResource r = new ENResource(ms.ToArray(), "image/png");//, System.IO.Path.GetFileName(fp));
                     n.AddResource(r);
+                    i.Dispose();
+                    i = null;
                 }
 	        }
             ENNoteRef enref = ENSession.SharedSession.UploadNote(n, nb);

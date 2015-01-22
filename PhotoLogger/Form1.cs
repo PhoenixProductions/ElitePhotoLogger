@@ -165,7 +165,7 @@ namespace PhotoLogger
         private void processToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogProcessor p = new LogProcessor(EN);
-            p.Show();
+            p.ShowDialog(this);
         }
 
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)

@@ -42,6 +42,7 @@ namespace PhotoLogger
             {
                 ENNotebookList.Items.AddRange(Evernote.ENManager.GetInstance().GetNotebooks().ToArray());
                 ENNotebookList.DisplayMember = "Name";
+                ENNotebookList.SelectedText = PhotoLogger.Properties.Settings.Default.ENNotebook;
             }
         }
 
