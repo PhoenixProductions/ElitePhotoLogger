@@ -94,5 +94,17 @@ namespace PhotoLogger.Properties {
                 this["ENEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ENNotebook {
+            get {
+                return ((string)(this["ENNotebook"]));
+            }
+            set {
+                this["ENNotebook"] = value;
+            }
+        }
     }
 }

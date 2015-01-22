@@ -10,10 +10,25 @@ namespace PhotoLogger.Evernote
     /// <summary>
     /// Manages interaction with Evernote
     /// </summary>
-    class ENManager
+    public class ENManager
     {
-        enum EverNoteMode
+        static ENManager _instance;
+
+        public static ENManager Initialise(EverNoteMode mode)
         {
+            if (_instance == null) {
+                _instance = new ENManager(mode);    
+            }
+            
+            return _instance;
+        }
+        public static ENManager GetInstance()
+        {
+            return _instance;
+        }
+        public enum EverNoteMode
+        {
+            Disabled = -1,
             Normal = 0,
             Personal
         }
@@ -22,19 +37,76 @@ namespace PhotoLogger.Evernote
 #else
         string _enHost = "";
 #endif
-        public ENManager(EverNoteMode personal)
+        EverNoteMode _mode;
+
+        public EverNoteMode Mode
         {
-            if (personal == EverNoteMode.Personal) {
+            get { return _mode; }
+            set { _mode = value; }
+        }
+
+        private ENManager(EverNoteMode mode)
+        {
+            if (mode == EverNoteMode.Personal)
+            {
+                _mode = EverNoteMode.Personal;
                 ENSession.SetSharedSessionDeveloperToken(
                     PhotoLogger.Properties.Settings.Default.ENPersonalToken,
                     PhotoLogger.Properties.Settings.Default.ENNoteStoreUrl
                     );
             }
-            else
+            else if (mode== EverNoteMode.Normal)
             {
+                _mode = EverNoteMode.Normal;
                 IENDevTokens tokenClass = new ENDevTokens();
                 ENSession.SetSharedSessionConsumerKey(tokenClass.GetConsumerKey(), tokenClass.GetSharedSecret(), _enHost);
             }
+            else
+            {
+                _mode = EverNoteMode.Disabled;
+            }
+
+            if (_mode != EverNoteMode.Disabled)
+            {
+                if (ENSession.SharedSession.IsAuthenticated == false)
+                {
+                    ENSession.SharedSession.AuthenticateToEvernote();
+                }
+            }
+        }
+        public void SaveLog(string title, string content)
+        {
+            this.SaveLog(title, content, null);
+        }
+        public void SaveLog(string title, string content, System.Drawing.Image[] attachments) {
+            ENNote n = new ENNote();
+            string targetNotebook = PhotoLogger.Properties.Settings.Default.ENNotebook;
+            ENNotebook nb = ENSession.SharedSession.ListNotebooks().Where(b => b.Name == targetNotebook).FirstOrDefault();
+
+            if (nb != null)
+            {
+
+            }
+
+            n.Title = title;
+            n.Content = ENNoteContent.NoteContentWithString(content);
+            if (attachments != null && attachments.Length > 0)
+            {
+                foreach (System.Drawing.Image i in attachments){
+                    ENResource r = new ENResource(i);
+                    n.AddResource(r);
+                }
+	        }
+            ENNoteRef enref = ENSession.SharedSession.UploadNote(n, nb);
+        }
+        public List<ENNotebook> GetNotebooks()
+        {
+            return ENSession.SharedSession.ListNotebooks();
+            
+        }
+        public ENSession Session()
+        {
+            return ENSession.SharedSession;
         }
     }
 }

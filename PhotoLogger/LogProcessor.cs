@@ -15,13 +15,21 @@ namespace PhotoLogger
     {
         string _workingdir = "";
         const int eliteyearadjust = 1286;
+        Evernote.ENManager EN = null;
+
         public LogProcessor()
         {
             InitializeComponent();
-            _workingdir = System.IO.Path.Combine(
+            _workingdir = Form1._workingdir;
+            /*
+                System.IO.Path.Combine(
                 Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir),
-                "input");
+                "input");]*/
 
+        }
+        public LogProcessor(Evernote.ENManager EN): this()
+        {
+            this.EN = EN;
         }
 
         private void LogProcessor_Load(object sender, EventArgs e)
@@ -77,35 +85,46 @@ namespace PhotoLogger
         }
         void SaveLog()
         {
-            string _logdir = System.IO.Path.Combine(
-                Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir),
-                "log");
-            if (!Directory.Exists(_logdir)) {
-                try {
-                    Directory.CreateDirectory(_logdir);
-                }
-                catch(IOException e) {
-                    throw e;
-                }
-            }
-            string filepath = Path.Combine(_logdir, "LogEntry_" + LogDatePicker.Value.ToString("yyyy-MM-dd") + ".txt");
-            bool pad = false;
-            if (File.Exists(filepath))
+            if (EN.Mode == Evernote.ENManager.EverNoteMode.Disabled)
             {
-                pad = true;
-            }
-            StreamWriter f = new StreamWriter(filepath, true);
+                string _logdir = System.IO.Path.Combine(
+                    Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir),
+                    "log");
+                if (!Directory.Exists(_logdir))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(_logdir);
+                    }
+                    catch (IOException e)
+                    {
+                        throw e;
+                    }
+                }
+                string filepath = Path.Combine(_logdir, "LogEntry_" + LogDatePicker.Value.ToString("yyyy-MM-dd") + ".txt");
+                bool pad = false;
+                if (File.Exists(filepath))
+                {
+                    pad = true;
+                }
+                StreamWriter f = new StreamWriter(filepath, true);
                 //File.CreateText(filepath);
-            if (pad) {
-                f.WriteLine();
+                if (pad)
+                {
+                    f.WriteLine();
+                    f.WriteLine(new string('=', TxtLogTitle.Text.Length));
+                }
+                f.WriteLine(TxtLogTitle.Text);
                 f.WriteLine(new string('=', TxtLogTitle.Text.Length));
+                f.WriteLine(TxtEntry.Text);
+                f.Close();
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.Close();
             }
-            f.WriteLine(TxtLogTitle.Text);
-            f.WriteLine(new string('=', TxtLogTitle.Text.Length));
-            f.WriteLine(TxtEntry.Text);
-            f.Close();
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+            if (EN.Mode != Evernote.ENManager.EverNoteMode.Disabled)
+            {
+                EN.SaveLog(TxtLogTitle.Text, TxtEntry.Text);
+            }
             /*if (RemoveOnSave.Checked) {
                 foreach (PhotoListItem i in ListPhotos.Items)
                 {

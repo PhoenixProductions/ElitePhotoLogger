@@ -12,53 +12,20 @@ namespace PhotoLogger
 {
     public partial class Form1 : Form
     {
-        string _logbasedir = "";
-        string _logdir = "";
-        string _workingdir = "";
+        public static string _logbasedir = "";
+        public static string _logdir = "";
+        public static string _workingdir = "";
         //string _elitelogs = @"C:\Users\michael\AppData\Local\Frontier_Developments\Products\FORC-FDEV-D-1001\Logs";
-        string _elitePhotos = "";//@"C:\Users\michael\Pictures\Frontier Developments\Elite Dangerous";
+        public string _elitePhotos = "";//@"C:\Users\michael\Pictures\Frontier Developments\Elite Dangerous";
         bool _running = false;
+
+        Evernote.ENManager EN = null;
 
         public Form1()
         {
             InitializeComponent();
-            _elitePhotos =  System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.EDPhotoDir));
-            _logbasedir =  System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir));
-            _logdir = System.IO.Path.Combine(_logbasedir, "log");
-            _workingdir = System.IO.Path.Combine(_logbasedir, "input");
-            if (!System.IO.Directory.Exists(_logbasedir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_logbasedir);
-                }
-                catch(System.IO.IOException e)
-                {
-                    throw e;
-                }
-            } 
-            if (!System.IO.Directory.Exists(_logdir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_logdir);
-                }
-                catch (System.IO.IOException e)
-                {
-                    throw e;
-                }
-            }
-            if (!System.IO.Directory.Exists(_workingdir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_workingdir);
-                }
-                catch (System.IO.IOException e)
-                {
-                    throw e;
-                }
-            }
+            //watch for settings changing
+            
         }
         void toggle()
         {
@@ -142,13 +109,72 @@ namespace PhotoLogger
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            if (PhotoLogger.Properties.Settings.Default.ENEnabled)
+            {
+                System.Diagnostics.Debug.WriteLine("Enabling evernote");
+                EN = Evernote.ENManager.Initialise((Evernote.ENManager.EverNoteMode)PhotoLogger.Properties.Settings.Default.ENMode);
+                    
+            }
+            else
+            {
+                EN = Evernote.ENManager.Initialise(Evernote.ENManager.EverNoteMode.Disabled);
+            }
+            _elitePhotos = System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.EDPhotoDir));
+#if DEBUG
+            _logbasedir = System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir + "-debug"));
+#else
+            _logbasedir =  System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir));
+#endif
+            _logdir = System.IO.Path.Combine(_logbasedir, "log");
+            _workingdir = System.IO.Path.Combine(_logbasedir, "input");
+            if (!System.IO.Directory.Exists(_logbasedir))
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(_logbasedir);
+                }
+                catch (System.IO.IOException ex)
+                {
+                    throw ex;
+                }
+            }
+            if (!System.IO.Directory.Exists(_logdir))
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(_logdir);
+                }
+                catch (System.IO.IOException ex)
+                {
+                    throw ex;
+                }
+            }
+            if (!System.IO.Directory.Exists(_workingdir))
+            {
+                try
+                {
+                    System.IO.Directory.CreateDirectory(_workingdir);
+                }
+                catch (System.IO.IOException ex)
+                {
+                    throw ex;
+                }
+            }
         }
 
         private void processToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogProcessor p = new LogProcessor();
+            LogProcessor p = new LogProcessor(EN);
             p.Show();
+        }
+
+        private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings s = new Settings();
+            if (s.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+
+            }
         }
 
 
