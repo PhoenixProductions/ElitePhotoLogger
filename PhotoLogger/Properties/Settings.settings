@@ -8,5 +8,17 @@
     <Setting Name="EDPhotoDir" Type="System.String" Scope="User">
       <Value Profile="(Default)">%HOMEPATH%\Pictures\Frontier Developments\Elite Dangerous</Value>
     </Setting>
+    <Setting Name="ENPersonalToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ENMode" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ENNoteStoreUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ENEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

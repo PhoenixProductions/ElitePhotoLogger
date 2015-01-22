@@ -46,5 +46,53 @@ namespace PhotoLogger.Properties {
                 this["EDPhotoDir"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ENPersonalToken {
+            get {
+                return ((string)(this["ENPersonalToken"]));
+            }
+            set {
+                this["ENPersonalToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ENMode {
+            get {
+                return ((int)(this["ENMode"]));
+            }
+            set {
+                this["ENMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ENNoteStoreUrl {
+            get {
+                return ((string)(this["ENNoteStoreUrl"]));
+            }
+            set {
+                this["ENNoteStoreUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ENEnabled {
+            get {
+                return ((bool)(this["ENEnabled"]));
+            }
+            set {
+                this["ENEnabled"] = value;
+            }
+        }
     }
 }
