@@ -30,16 +30,19 @@
         {
             this.SettingsTabContainer = new System.Windows.Forms.TabControl();
             this.TabGeneralSettings = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
+            this.TabEvernote = new System.Windows.Forms.TabPage();
+            this.BtnLogoutEvernote = new System.Windows.Forms.Button();
             this.ENNotebookList = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.EvernoteEnabled = new System.Windows.Forms.CheckBox();
             this.SettingsTabContainer.SuspendLayout();
-            this.TabGeneralSettings.SuspendLayout();
+            this.TabEvernote.SuspendLayout();
             this.SuspendLayout();
             // 
             // SettingsTabContainer
             // 
             this.SettingsTabContainer.Controls.Add(this.TabGeneralSettings);
+            this.SettingsTabContainer.Controls.Add(this.TabEvernote);
             this.SettingsTabContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabContainer.Location = new System.Drawing.Point(0, 0);
             this.SettingsTabContainer.Name = "SettingsTabContainer";
@@ -49,9 +52,6 @@
             // 
             // TabGeneralSettings
             // 
-            this.TabGeneralSettings.Controls.Add(this.ENNotebookList);
-            this.TabGeneralSettings.Controls.Add(this.label1);
-            this.TabGeneralSettings.Controls.Add(this.EvernoteEnabled);
             this.TabGeneralSettings.Location = new System.Drawing.Point(4, 22);
             this.TabGeneralSettings.Name = "TabGeneralSettings";
             this.TabGeneralSettings.Padding = new System.Windows.Forms.Padding(3);
@@ -60,36 +60,59 @@
             this.TabGeneralSettings.Text = "General";
             this.TabGeneralSettings.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // TabEvernote
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 42);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(55, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "NoteBook";
+            this.TabEvernote.Controls.Add(this.BtnLogoutEvernote);
+            this.TabEvernote.Controls.Add(this.ENNotebookList);
+            this.TabEvernote.Controls.Add(this.label1);
+            this.TabEvernote.Controls.Add(this.EvernoteEnabled);
+            this.TabEvernote.Location = new System.Drawing.Point(4, 22);
+            this.TabEvernote.Name = "TabEvernote";
+            this.TabEvernote.Size = new System.Drawing.Size(539, 235);
+            this.TabEvernote.TabIndex = 1;
+            this.TabEvernote.Text = "Evernote";
+            this.TabEvernote.UseVisualStyleBackColor = true;
+            // 
+            // BtnLogoutEvernote
+            // 
+            this.BtnLogoutEvernote.Location = new System.Drawing.Point(392, 10);
+            this.BtnLogoutEvernote.Name = "BtnLogoutEvernote";
+            this.BtnLogoutEvernote.Size = new System.Drawing.Size(139, 44);
+            this.BtnLogoutEvernote.TabIndex = 6;
+            this.BtnLogoutEvernote.Text = "Logout From Evernote";
+            this.BtnLogoutEvernote.UseVisualStyleBackColor = true;
+            this.BtnLogoutEvernote.Visible = false;
+            this.BtnLogoutEvernote.Click += new System.EventHandler(this.BtnLogoutEvernote_Click);
             // 
             // ENNotebookList
             // 
             this.ENNotebookList.FormattingEnabled = true;
-            this.ENNotebookList.Location = new System.Drawing.Point(69, 39);
+            this.ENNotebookList.Location = new System.Drawing.Point(99, 38);
             this.ENNotebookList.Name = "ENNotebookList";
-            this.ENNotebookList.Size = new System.Drawing.Size(121, 21);
-            this.ENNotebookList.TabIndex = 2;
-            this.ENNotebookList.SelectedIndexChanged += new System.EventHandler(this.ENNotebookList_SelectedIndexChanged);
+            this.ENNotebookList.Size = new System.Drawing.Size(192, 21);
+            this.ENNotebookList.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 41);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "NoteBook";
             // 
             // EvernoteEnabled
             // 
             this.EvernoteEnabled.AutoSize = true;
+            this.EvernoteEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.EvernoteEnabled.Checked = global::PhotoLogger.Properties.Settings.Default.ENEnabled;
             this.EvernoteEnabled.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::PhotoLogger.Properties.Settings.Default, "ENEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.EvernoteEnabled.Location = new System.Drawing.Point(11, 22);
+            this.EvernoteEnabled.Location = new System.Drawing.Point(8, 15);
             this.EvernoteEnabled.Name = "EvernoteEnabled";
             this.EvernoteEnabled.Size = new System.Drawing.Size(105, 17);
-            this.EvernoteEnabled.TabIndex = 0;
+            this.EvernoteEnabled.TabIndex = 3;
             this.EvernoteEnabled.Text = "Enable Evernote";
             this.EvernoteEnabled.UseVisualStyleBackColor = true;
-            this.EvernoteEnabled.CheckedChanged += new System.EventHandler(this.EvernoteEnabled_CheckedChanged);
             // 
             // Settings
             // 
@@ -98,12 +121,13 @@
             this.ClientSize = new System.Drawing.Size(547, 261);
             this.Controls.Add(this.SettingsTabContainer);
             this.Name = "Settings";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Settings_FormClosed);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.SettingsTabContainer.ResumeLayout(false);
-            this.TabGeneralSettings.ResumeLayout(false);
-            this.TabGeneralSettings.PerformLayout();
+            this.TabEvernote.ResumeLayout(false);
+            this.TabEvernote.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -112,8 +136,10 @@
 
         private System.Windows.Forms.TabControl SettingsTabContainer;
         private System.Windows.Forms.TabPage TabGeneralSettings;
-        private System.Windows.Forms.CheckBox EvernoteEnabled;
+        private System.Windows.Forms.TabPage TabEvernote;
         private System.Windows.Forms.ComboBox ENNotebookList;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox EvernoteEnabled;
+        private System.Windows.Forms.Button BtnLogoutEvernote;
     }
 }

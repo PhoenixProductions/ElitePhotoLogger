@@ -52,5 +52,13 @@ namespace PhotoLogger
             PhotoLogger.Properties.Settings.Default.ENNotebook = ((EvernoteSDK.ENNotebook)ENNotebookList.SelectedItem).Name;
             _dirty = true;
         }
+
+        private void BtnLogoutEvernote_Click(object sender, EventArgs e)
+        {
+            if (Evernote.ENManager.GetInstance().Session().IsAuthenticated)
+            {
+                
+            }
+        }
     }
 }

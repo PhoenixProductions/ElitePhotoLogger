@@ -55,6 +55,8 @@ namespace PhotoLogger
                 
                 stopMonitoring();
                 btnControl.Text = "Start";
+
+                //clean up when we indicate a session is over?
             }
             System.Diagnostics.Debug.WriteLine("Done");
         }
@@ -69,6 +71,16 @@ namespace PhotoLogger
         {
             fileSystemWatcher1.EnableRaisingEvents = false;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>Originally intended to capture a screen shot on regular intervals so that 
+        /// the pilot doesn't have to.
+        /// 
+        /// If we reinstate this we may have to name auto-captures differently so that we can 
+        /// differentiate them and filter them out when writing the log entry, especially if we're offering the
+        /// option to upload images to evernote 
+        /// </remarks>
         void capture()
         {
             return;
@@ -175,6 +187,27 @@ namespace PhotoLogger
             {
 
             }
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.ApplicationExitCall)
+            {
+                //save window position
+                PhotoLogger.Properties.Settings.Default.MainWindowStartLocation = this.Location;
+                
+                //perform clean ups?
+            }
+
+            PhotoLogger.Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// Clean up at the [start?|end?]of a run
+        /// </summary>
+        void CleanUp()
+        {
+
         }
 
 
