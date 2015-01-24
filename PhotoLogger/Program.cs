@@ -16,6 +16,9 @@ namespace PhotoLogger
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#if (NoEN) 
+            System.Console.WriteLine("NoEN compile flag set, Evernote will *never* be sent data");
+#endif
             Application.Run(new Form1());
         }
     }

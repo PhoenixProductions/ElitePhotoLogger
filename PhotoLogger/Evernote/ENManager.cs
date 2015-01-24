@@ -160,6 +160,8 @@ namespace PhotoLogger.Evernote
 	        }
 #if (!NoEN) 
             ENNoteRef enref = ENSession.SharedSession.UploadNote(n, nb);
+#else 
+            System.Diagnostics.Debug.WriteLine("Evernote request suppressed by NoEN compile flag.");
 #endif
         }
         public List<ENNotebook> GetNotebooks()
