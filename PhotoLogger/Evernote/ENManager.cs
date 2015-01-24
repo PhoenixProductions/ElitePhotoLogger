@@ -13,6 +13,11 @@ namespace PhotoLogger.Evernote
     public class ENManager
     {
         static ENManager _instance;
+        
+        /// <summary>
+        /// Set the width that images are resized to
+        /// </summary>
+        const int IMAGEWIDTH = 1024;
 
         public static ENManager Initialise(EverNoteMode mode)
         {
@@ -74,10 +79,21 @@ namespace PhotoLogger.Evernote
                 }
             }
         }
+        /// <summary>
+        /// Save a log entry with no images
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
         public void SaveLog(string title, string content)
         {
             this.SaveLog(title, content, null);
         }
+        /// <summary>
+        /// Save log with images
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <param name="attachmentPaths"></param>
         public void SaveLog(string title, string content, string[] attachmentPaths) {
             ENNote n = new ENNote();
             string targetNotebook = PhotoLogger.Properties.Settings.Default.ENNotebook;
@@ -92,39 +108,59 @@ namespace PhotoLogger.Evernote
             n.Content = ENNoteContent.NoteContentWithString(content);
             if (attachmentPaths != null && attachmentPaths.Length > 0)
             {
+                int counter = 1;
                 foreach (string fp in attachmentPaths){
                     System.Drawing.Image i = System.Drawing.Image.FromFile(fp);
-                    
-                     //This was an attempt to do an on-the-fly resize
-                    float aspect = i.HorizontalResolution / i.VerticalResolution;
-                    int newWidth = (int)(800 * aspect);
-                    System.Drawing.Rectangle dr = new System.Drawing.Rectangle(0, 0, 800, newWidth);    //probably want to make this an option
-                    System.Drawing.Bitmap i2 = new System.Drawing.Bitmap(800, newWidth);
-                    i2.SetResolution(i.HorizontalResolution, i.VerticalResolution);
-                    using (var graphics = System.Drawing.Graphics.FromImage(i2))
-                    {
-                        graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                        graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                        graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
 
-                        using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
+                    if (i.Width >= IMAGEWIDTH)  // only resize if larger than set size
+                    {
+                        //This was an attempt to do an on-the-fly resize
+                        float aspect = (float)i.Width / (float)i.Height;
+                        float newheight = (int)(IMAGEWIDTH / aspect);
+                        System.Drawing.Rectangle dr = new System.Drawing.Rectangle(0, 0, IMAGEWIDTH, (int)Math.Ceiling(newheight));    //probably want to make this an option
+                        System.Drawing.Bitmap i2 = new System.Drawing.Bitmap(IMAGEWIDTH, (int)Math.Ceiling(newheight));
+                        i2.SetResolution(i.HorizontalResolution, i.VerticalResolution);
+                        using (var graphics = System.Drawing.Graphics.FromImage(i2))
                         {
-                            wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
-                            graphics.DrawImage(i, dr, 0, 0, i.Width,i.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
+                            graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                            graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                            graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                            graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                            using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
+                            {
+                                wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                                graphics.DrawImage(i, dr, 0, 0, i.Width, i.Height, System.Drawing.GraphicsUnit.Pixel, wrapMode);
+                            }
                         }
+                        System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                        i2.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+#if (NoEN)
+                        string tmpdir = System.IO.Path.Combine(Form1._workingdir, "tmp");
+                        if (!System.IO.Directory.Exists(tmpdir))
+                        {
+                            System.IO.Directory.CreateDirectory(tmpdir);
+                        }
+                        i2.Save(System.IO.Path.Combine(tmpdir, "tmpimage" + counter + ".png"), System.Drawing.Imaging.ImageFormat.Png);
+#endif
+                        //ENResource r = new ENResource(i);
+                        ENResource r = new ENResource(ms.ToArray(), "image/png");//, System.IO.Path.GetFileName(fp));
+                        n.AddResource(r);
                     }
-                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                    i2.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    //ENResource r = new ENResource(i);
-                    ENResource r = new ENResource(ms.ToArray(), "image/png");//, System.IO.Path.GetFileName(fp));
-                    n.AddResource(r);
+                    else // Otherwise we just use as is.
+                    {
+                        ENResource r = new ENResource(i);
+                        n.AddResource(r);
+                    }
                     i.Dispose();
                     i = null;
+                    counter++;
                 }
 	        }
+#if (!NoEN) 
             ENNoteRef enref = ENSession.SharedSession.UploadNote(n, nb);
+#endif
         }
         public List<ENNotebook> GetNotebooks()
         {

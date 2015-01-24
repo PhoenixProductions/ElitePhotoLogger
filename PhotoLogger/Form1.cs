@@ -121,6 +121,7 @@ namespace PhotoLogger
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
             if (PhotoLogger.Properties.Settings.Default.ENEnabled)
             {
                 System.Diagnostics.Debug.WriteLine("Enabling evernote");
