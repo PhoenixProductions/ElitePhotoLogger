@@ -91,9 +91,9 @@ namespace PhotoLogger.Evernote
         /// <summary>
         /// Save log with images
         /// </summary>
-        /// <param name="title"></param>
-        /// <param name="content"></param>
-        /// <param name="attachmentPaths"></param>
+        /// <param name="title">The Entry's title</param>
+        /// <param name="content">Textual content</param>
+        /// <param name="attachmentPaths">Any images that should be attached</param>
         public void SaveLog(string title, string content, string[] attachmentPaths) {
             ENNote n = new ENNote();
             string targetNotebook = PhotoLogger.Properties.Settings.Default.ENNotebook;
@@ -170,6 +170,7 @@ namespace PhotoLogger.Evernote
         public ENSession Session()
         {
             return ENSession.SharedSession;
+            
         }
     }
 }

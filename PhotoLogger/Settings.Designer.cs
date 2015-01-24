@@ -113,6 +113,7 @@
             this.EvernoteEnabled.TabIndex = 3;
             this.EvernoteEnabled.Text = "Enable Evernote";
             this.EvernoteEnabled.UseVisualStyleBackColor = true;
+            this.EvernoteEnabled.CheckedChanged += new System.EventHandler(this.EvernoteEnabled_CheckedChanged_1);
             // 
             // Settings
             // 

@@ -38,13 +38,27 @@ namespace PhotoLogger
         private void Settings_Load(object sender, EventArgs e)
         {
             //get list of EN Notebooks
-            if (PhotoLogger.Properties.Settings.Default.ENEnabled)
+            if (Evernote.ENManager.GetInstance().Mode != Evernote.ENManager.EverNoteMode.Disabled && 
+                PhotoLogger.Properties.Settings.Default.ENEnabled)
             {
-                ENNotebookList.Items.AddRange(Evernote.ENManager.GetInstance().GetNotebooks().ToArray());
-                ENNotebookList.DisplayMember = "Name";
-                ENNotebookList.SelectedText = PhotoLogger.Properties.Settings.Default.ENNotebook;
+                ENNotebookList.BeginUpdate();
+                this.loadNotebooks();
+                ENNotebookList.EndUpdate();
+            }
+            else
+            {
+                EvernoteEnabled.Enabled = false;
+                ENNotebookList.Enabled = false;
             }
         }
+
+        void loadNotebooks() {
+            ENNotebookList.Items.Clear();
+            ENNotebookList.Items.AddRange(Evernote.ENManager.GetInstance().GetNotebooks().ToArray());
+            ENNotebookList.DisplayMember = "Name";
+            ENNotebookList.SelectedText = PhotoLogger.Properties.Settings.Default.ENNotebook;
+        }
+
 
         private void ENNotebookList_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -59,6 +73,18 @@ namespace PhotoLogger
             {
                 
             }
+        }
+
+        private void EvernoteEnabled_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (!Evernote.ENManager.GetInstance().Session().IsAuthenticated)
+            {
+                Evernote.ENManager.GetInstance().Session().AuthenticateToEvernote();
+                ENNotebookList.BeginUpdate();
+                this.loadNotebooks();
+                ENNotebookList.EndUpdate();
+            }
+           
         }
     }
 }
