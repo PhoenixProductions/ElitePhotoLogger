@@ -34,9 +34,14 @@
             this.BtnLogoutEvernote = new System.Windows.Forms.Button();
             this.ENNotebookList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.CheckAutoPostTwitter = new System.Windows.Forms.CheckBox();
             this.EvernoteEnabled = new System.Windows.Forms.CheckBox();
             this.SettingsTabContainer.SuspendLayout();
+            this.TabGeneralSettings.SuspendLayout();
             this.TabEvernote.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SettingsTabContainer
@@ -52,6 +57,7 @@
             // 
             // TabGeneralSettings
             // 
+            this.TabGeneralSettings.Controls.Add(this.groupBox1);
             this.TabGeneralSettings.Location = new System.Drawing.Point(4, 22);
             this.TabGeneralSettings.Name = "TabGeneralSettings";
             this.TabGeneralSettings.Padding = new System.Windows.Forms.Padding(3);
@@ -91,6 +97,7 @@
             this.ENNotebookList.Name = "ENNotebookList";
             this.ENNotebookList.Size = new System.Drawing.Size(192, 21);
             this.ENNotebookList.TabIndex = 5;
+            this.ENNotebookList.SelectedIndexChanged += new System.EventHandler(this.ENNotebookList_SelectedIndexChanged_1);
             // 
             // label1
             // 
@@ -101,11 +108,43 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "NoteBook";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.CheckAutoPostTwitter);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Location = new System.Drawing.Point(8, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(523, 100);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Twitter";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(6, 46);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Configure";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // CheckAutoPostTwitter
+            // 
+            this.CheckAutoPostTwitter.AutoSize = true;
+            this.CheckAutoPostTwitter.Location = new System.Drawing.Point(7, 20);
+            this.CheckAutoPostTwitter.Name = "CheckAutoPostTwitter";
+            this.CheckAutoPostTwitter.Size = new System.Drawing.Size(156, 17);
+            this.CheckAutoPostTwitter.TabIndex = 1;
+            this.CheckAutoPostTwitter.Text = "Auto Post Images to Twitter";
+            this.CheckAutoPostTwitter.UseVisualStyleBackColor = true;
+            this.CheckAutoPostTwitter.CheckedChanged += new System.EventHandler(this.CheckAutoPostTwitter_CheckedChanged);
+            // 
             // EvernoteEnabled
             // 
             this.EvernoteEnabled.AutoSize = true;
             this.EvernoteEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.EvernoteEnabled.Checked = global::PhotoLogger.Properties.Settings.Default.ENEnabled;
+            this.EvernoteEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
             this.EvernoteEnabled.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::PhotoLogger.Properties.Settings.Default, "ENEnabled", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.EvernoteEnabled.Location = new System.Drawing.Point(8, 15);
             this.EvernoteEnabled.Name = "EvernoteEnabled";
@@ -127,8 +166,11 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Settings_FormClosed);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.SettingsTabContainer.ResumeLayout(false);
+            this.TabGeneralSettings.ResumeLayout(false);
             this.TabEvernote.ResumeLayout(false);
             this.TabEvernote.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -142,5 +184,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox EvernoteEnabled;
         private System.Windows.Forms.Button BtnLogoutEvernote;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox CheckAutoPostTwitter;
     }
 }

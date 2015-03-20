@@ -43,6 +43,7 @@ namespace PhotoLogger
             {
                 ENNotebookList.BeginUpdate();
                 this.loadNotebooks();
+                
                 ENNotebookList.EndUpdate();
             }
             else
@@ -85,6 +86,17 @@ namespace PhotoLogger
                 ENNotebookList.EndUpdate();
             }
            
+        }
+
+        private void ENNotebookList_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CheckAutoPostTwitter_CheckedChanged(object sender, EventArgs e)
+        {
+            PhotoLogger.Properties.Settings.Default.AutoPostTwitter = CheckAutoPostTwitter.Checked;
+                
         }
     }
 }

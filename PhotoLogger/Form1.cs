@@ -20,6 +20,7 @@ namespace PhotoLogger
         bool _running = false;
 
         Evernote.ENManager EN = null;
+        Twitter.Twitter TWITTER = null;
 
         public Form1()
         {
@@ -112,9 +113,15 @@ namespace PhotoLogger
             if (convert) {
                 string convertedFilename = System.IO.Path.GetFileNameWithoutExtension(e.FullPath) + ".png";
                 System.Drawing.Image src = System.Drawing.Image.FromFile(e.FullPath);
-                src.Save(System.IO.Path.Combine(_workingdir, convertedFilename), System.Drawing.Imaging.ImageFormat.Png);
+                string savefile = System.IO.Path.Combine(_workingdir, convertedFilename);
+                src.Save(savefile, System.Drawing.Imaging.ImageFormat.Png);
                 src.Dispose();
                 src = null;
+                if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
+                {
+                    PostTweet(savefile);
+
+                }
             }
                 
         }
@@ -209,6 +216,69 @@ namespace PhotoLogger
         void CleanUp()
         {
 
+        }
+        static int twitterErrorCount = 0;
+        void PostTweet(string filepath)
+        {
+            if (TWITTER == null) {
+                return;
+            }
+            //try to load existing credentials
+            //PhotoLogger.Properties.Settings.Default.TwitterCredentials = (Tweetinvi.WebLogic.OAuthCredentials)nCred;
+            Tweetinvi.TwitterCredentials.SetCredentials(PhotoLogger.Properties.Settings.Default.TwitterCredentials);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine(@"Checking logged in");
+                Tweetinvi.User.GetLoggedUser();
+
+                System.Diagnostics.Debug.WriteLine(@"Posting " + filepath);
+                Tweetinvi.Tweet.PublishTweet("test");
+                /*byte[] media = System.IO.File.ReadAllBytes(filepath);
+                Tweetinvi.Core.Interfaces.ITweet tweet = Tweetinvi.Tweet.CreateTweetWithMedia("", media);
+                tweet.Publish();
+                 */ 
+
+            }
+            catch (Tweetinvi.Core.Exceptions.TwitterNullCredentialsException ex)
+            {
+                if (twitterErrorCount > 2) {
+                    throw ex;
+                }
+                twitterErrorCount++;
+                Tweetinvi.Core.Interfaces.Credentials.ITemporaryCredentials tCred = Tweetinvi.CredentialsCreator.GenerateApplicationCredentials(
+                   TWITTER.GetConsumerKey(),
+                   TWITTER.GetSharedSecret());
+
+                string url = Tweetinvi.CredentialsCreator.GetAuthorizationURL(
+                    tCred
+                    );
+                System.Diagnostics.Process.Start(url);
+                TwitterCaptcha c = new TwitterCaptcha();
+                if (c.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
+                    System.Diagnostics.Debug.WriteLine(@"Authorising with twitter");
+                    Tweetinvi.Core.Interfaces.oAuth.IOAuthCredentials nCred = Tweetinvi.CredentialsCreator.GetCredentialsFromVerifierCode(c.CaptchaText,tCred);
+                    Tweetinvi.TwitterCredentials.SetCredentials(nCred);
+                    PhotoLogger.Properties.Settings.Default.TwitterCredentials = (Tweetinvi.WebLogic.OAuthCredentials) nCred;
+                    //PhotoLogger.Properties.Settings.Default.TwitterAccessToken = nCred.AccessToken;
+                    //PhotoLogger.Properties.Settings.Default.TwitterAccessSecret = nCred.AccessTokenSecret;
+                    PhotoLogger.Properties.Settings.Default.Save();
+                    PostTweet(filepath);//retry
+                }
+                else
+                {
+                    throw ex;
+                }
+            }
+            /*
+            byte[] media = System.IO.File.ReadAllBytes(filepath);
+            Tweetinvi.Core.Interfaces.ITweet tweet = Tweetinvi.Tweet.CreateTweetWithMedia("", media);
+            tweet.Publish();
+             */
+        }
+
+        private void testTwitterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PostTweet(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
         }
 
 
