@@ -25,7 +25,7 @@ namespace PhotoLogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%HOMEPATH%\\Documents\\FlightLog")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"%HOMEPATH%\Documents\FlightLog")]
         public string FlightLogBaseDir {
             get {
                 return ((string)(this["FlightLogBaseDir"]));
@@ -37,7 +37,7 @@ namespace PhotoLogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%HOMEPATH%\\Pictures\\Frontier Developments\\Elite Dangerous")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"%HOMEPATH%\Pictures\Frontier Developments\Elite Dangerous")]
         public string EDPhotoDir {
             get {
                 return ((string)(this["EDPhotoDir"]));

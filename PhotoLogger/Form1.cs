@@ -32,12 +32,15 @@ namespace PhotoLogger
 
             if (!_running)
             {
-                System.Diagnostics.Process[] potentialElites = System.Diagnostics.Process.GetProcessesByName("EliteDangerous32");
-                if (potentialElites.Length == 0)
-                {
-                    System.Diagnostics.Debug.WriteLine("Elite not running");
-                    return;
-                }
+				if (Environment.OSVersion.Platform == PlatformID.Unix) {
+					System.Diagnostics.Debug.WriteLine ("Disabling process checking");
+				} else {
+					System.Diagnostics.Process[] potentialElites = System.Diagnostics.Process.GetProcessesByName ("EliteDangerous32");
+					if (potentialElites.Length == 0) {
+						System.Diagnostics.Debug.WriteLine ("Elite not running");
+						return;
+					}
+				}
             }
             _running = !_running;
             if (_running)
@@ -63,8 +66,15 @@ namespace PhotoLogger
 
         void startMonitoring()
         {
-            fileSystemWatcher1.Path =_elitePhotos;
-            fileSystemWatcher1.EnableRaisingEvents = true;
+			System.Diagnostics.Debug.WriteLine ("Starting monitoring " + _elitePhotos + "for changes");
+			if (System.IO.Directory.Exists(_elitePhotos)) {
+
+	            fileSystemWatcher1.Path =_elitePhotos;
+	            fileSystemWatcher1.EnableRaisingEvents = true;
+			} else {
+
+				return;
+			}
 
         }
         void stopMonitoring()
@@ -119,9 +129,75 @@ namespace PhotoLogger
                 
         }
 
+		void validateSettings() {
+			string settingsPhotoDir = PhotoLogger.Properties.Settings.Default.EDPhotoDir;
+			string settingsLogBaseDir = PhotoLogger.Properties.Settings.Default.FlightLogBaseDir;
+
+			#if DEBUG
+			settingsLogBaseDir += "-debug";
+			#endif
+
+			if (Environment.OSVersion.Platform == PlatformID.Unix) {
+				// unix variant
+				_elitePhotos = System.IO.Path.GetFullPath(settingsPhotoDir.Replace(@"\", System.IO.Path.DirectorySeparatorChar.ToString()).Replace("%HOMEPATH%", System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)));//System.IO.Path.GetFullPath ();
+				_logbasedir = System.IO.Path.GetFullPath((settingsLogBaseDir.Replace(@"\", System.IO.Path.DirectorySeparatorChar.ToString()).Replace("%HOMEPATH%", System.Environment.GetFolderPath(Environment.SpecialFolder.UserProfile))));//System.IO.Path.GetFullPath(settingsLogBaseDir );
+			} else {
+				//some windows variant
+				_elitePhotos = System.IO.Path.GetFullPath (Environment.ExpandEnvironmentVariables (settingsPhotoDir));
+				_logbasedir = System.IO.Path.GetFullPath (Environment.ExpandEnvironmentVariables (settingsLogBaseDir + "-debug\t"));
+			}
+			_elitePhotos = System.IO.Path.GetFullPath (_elitePhotos);
+			_logdir = System.IO.Path.Combine(_logbasedir, "log");
+			_logdir = System.IO.Path.GetFullPath (_logdir);
+			_workingdir = System.IO.Path.Combine(_logbasedir, "input");
+			_workingdir = System.IO.Path.GetFullPath (_workingdir);
+
+			if (!System.IO.Directory.Exists(_logbasedir))
+			{
+				try
+				{
+					System.IO.Directory.CreateDirectory(_logbasedir);
+				}
+				catch (System.IO.IOException ex)
+				{
+					throw ex;
+				}
+			}
+			if (!System.IO.Directory.Exists(_logdir))
+			{
+				try
+				{
+					System.IO.Directory.CreateDirectory(_logdir);
+				}
+				catch (System.IO.IOException ex)
+				{
+					throw ex;
+				}
+			}
+			if (!System.IO.Directory.Exists(_workingdir))
+			{
+				try
+				{
+					System.IO.Directory.CreateDirectory(_workingdir);
+				}
+				catch (System.IO.IOException ex)
+				{
+					throw ex;
+				}
+			}
+
+			// Check Flightlog path (for outputs)
+			System.Diagnostics.Debug.WriteLine (_elitePhotos);
+			// check ED input directory (for monitoring)
+			System.Diagnostics.Debug.WriteLine (_logbasedir);
+			//if (!System.IO.Directory.Exists(_logbasedir);
+
+		}
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
+
+
             if (PhotoLogger.Properties.Settings.Default.ENEnabled)
             {
                 System.Diagnostics.Debug.WriteLine("Enabling evernote");
@@ -132,47 +208,8 @@ namespace PhotoLogger
             {
                 EN = Evernote.ENManager.Initialise(Evernote.ENManager.EverNoteMode.Disabled);
             }
-            _elitePhotos = System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.EDPhotoDir));
-#if DEBUG
-            _logbasedir = System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir + "-debug"));
-#else
-            _logbasedir =  System.IO.Path.GetFullPath(Environment.ExpandEnvironmentVariables(PhotoLogger.Properties.Settings.Default.FlightLogBaseDir));
-#endif
-            _logdir = System.IO.Path.Combine(_logbasedir, "log");
-            _workingdir = System.IO.Path.Combine(_logbasedir, "input");
-            if (!System.IO.Directory.Exists(_logbasedir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_logbasedir);
-                }
-                catch (System.IO.IOException ex)
-                {
-                    throw ex;
-                }
-            }
-            if (!System.IO.Directory.Exists(_logdir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_logdir);
-                }
-                catch (System.IO.IOException ex)
-                {
-                    throw ex;
-                }
-            }
-            if (!System.IO.Directory.Exists(_workingdir))
-            {
-                try
-                {
-                    System.IO.Directory.CreateDirectory(_workingdir);
-                }
-                catch (System.IO.IOException ex)
-                {
-                    throw ex;
-                }
-            }
+            
+			validateSettings();
         }
 
         private void processToolStripMenuItem_Click(object sender, EventArgs e)
