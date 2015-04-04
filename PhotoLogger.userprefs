@@ -1,5 +1,12 @@
+<<<<<<< Upstream, based on origin/mono
 ﻿<Properties StartupItem="PhotoLogger\PhotoLogger.csproj" GitUserInfo="UsingGIT">
   <DisabledProjects>
     <String>PhotoLoggerInstall/PhotoLoggerInstall.isproj</String>
   </DisabledProjects>
+=======
+﻿<Properties StartupItem="PhotoLogger/PhotoLogger.csproj" GitUserInfo="UsingGIT">
+  <DisabledProjects>
+    <String>PhotoLoggerInstall/PhotoLoggerInstall.isproj</String>
+  </DisabledProjects>
+>>>>>>> a902aa7 Use Git config
 </Properties>
