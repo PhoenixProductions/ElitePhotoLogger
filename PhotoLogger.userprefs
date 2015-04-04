@@ -1,0 +1,5 @@
+﻿<Properties StartupItem="PhotoLogger/PhotoLogger.csproj">
+  <DisabledProjects>
+    <String>PhotoLoggerInstall/PhotoLoggerInstall.isproj</String>
+  </DisabledProjects>
+</Properties>
