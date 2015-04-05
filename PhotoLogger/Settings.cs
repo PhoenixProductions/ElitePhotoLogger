@@ -17,6 +17,12 @@ namespace PhotoLogger
         {
             InitializeComponent();
         }
+        Form1 _host;
+
+        public Settings(Form1 host): this()
+        {
+            _host = host;
+        }
 
         private void EvernoteEnabled_CheckedChanged(object sender, EventArgs e)
         {
@@ -38,7 +44,7 @@ namespace PhotoLogger
         private void Settings_Load(object sender, EventArgs e)
         {
             //get list of EN Notebooks
-            if (Evernote.ENManager.GetInstance().Mode != Evernote.ENManager.EverNoteMode.Disabled && 
+            if (Evernote.ENManager.GetInstance().Mode != Evernote.ENManager.EverNoteMode.Disabled & 
                 PhotoLogger.Properties.Settings.Default.ENEnabled)
             {
                 ENNotebookList.BeginUpdate();
@@ -51,6 +57,17 @@ namespace PhotoLogger
                 EvernoteEnabled.Enabled = false;
                 ENNotebookList.Enabled = false;
             }
+            CheckAutoPostTwitter.Checked = PhotoLogger.Properties.Settings.Default.AutoPostTwitter;
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
+            {
+                BtnConfigureTwitter.Text = @"Logout";
+                this.TxtTweetText.Text = PhotoLogger.Properties.Settings.Default.TweetText;
+            }
+            else
+            {
+                BtnConfigureTwitter.Text = @"Configure";
+            }
+            
         }
 
         void loadNotebooks() {
@@ -96,7 +113,26 @@ namespace PhotoLogger
         private void CheckAutoPostTwitter_CheckedChanged(object sender, EventArgs e)
         {
             PhotoLogger.Properties.Settings.Default.AutoPostTwitter = CheckAutoPostTwitter.Checked;
+            _dirty = true;
                 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
+            {
+                PhotoLogger.Properties.Settings.Default.TwitterCredentials = null;
+                PhotoLogger.Properties.Settings.Default.Save();
+            }
+            else
+            {
+                _host.TWITTER.Authorise();
+            }
+        }
+
+        private void TxtTweetText_TextChanged(object sender, EventArgs e)
+        {
+            PhotoLogger.Properties.Settings.Default.TweetText = TxtTweetText.Text;
         }
     }
 }

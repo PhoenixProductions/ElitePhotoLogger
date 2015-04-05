@@ -85,7 +85,7 @@ namespace PhotoLogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ENEnabled {
             get {
                 return ((bool)(this["ENEnabled"]));
@@ -139,6 +139,18 @@ namespace PhotoLogger.Properties {
             }
             set {
                 this["TwitterCredentials"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TweetText {
+            get {
+                return ((string)(this["TweetText"]));
+            }
+            set {
+                this["TweetText"] = value;
             }
         }
     }

@@ -18,7 +18,7 @@ namespace PhotoLogger.Evernote
         /// Set the width that images are resized to
         /// </summary>
         const int IMAGEWIDTH = 1024;
-
+        bool _authenticated = false;
         public static ENManager Initialise(EverNoteMode mode)
         {
             if (_instance == null) {
@@ -76,6 +76,11 @@ namespace PhotoLogger.Evernote
                 if (ENSession.SharedSession.IsAuthenticated == false)
                 {
                     ENSession.SharedSession.AuthenticateToEvernote();
+                    _authenticated = false;
+                }
+                else
+                {
+                    _authenticated = true;
                 }
             }
         }
@@ -166,7 +171,11 @@ namespace PhotoLogger.Evernote
         }
         public List<ENNotebook> GetNotebooks()
         {
-            return ENSession.SharedSession.ListNotebooks();
+            if (this.Mode != EverNoteMode.Disabled & this._authenticated )
+            {
+                return ENSession.SharedSession.ListNotebooks();
+            }
+            return new List<ENNotebook>();
             
         }
         public ENSession Session()

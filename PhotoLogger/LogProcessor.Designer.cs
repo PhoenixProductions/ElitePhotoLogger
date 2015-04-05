@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.ListPhotos = new System.Windows.Forms.CheckedListBox();
+            this.MenuListPhotos = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.DeleteCheckedPhotos = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveOnSave = new System.Windows.Forms.CheckBox();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -47,6 +50,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.MenuListPhotos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -81,6 +85,7 @@
             this.ListPhotos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ListPhotos.ContextMenuStrip = this.MenuListPhotos;
             this.ListPhotos.FormattingEnabled = true;
             this.ListPhotos.Location = new System.Drawing.Point(3, 3);
             this.ListPhotos.Name = "ListPhotos";
@@ -88,11 +93,25 @@
             this.ListPhotos.TabIndex = 2;
             this.ListPhotos.SelectedIndexChanged += new System.EventHandler(this.ListPhotos_SelectedIndexChanged);
             // 
+            // MenuListPhotos
+            // 
+            this.MenuListPhotos.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DeleteCheckedPhotos});
+            this.MenuListPhotos.Name = "MenuListPhotos";
+            this.MenuListPhotos.Size = new System.Drawing.Size(108, 26);
+            this.MenuListPhotos.Opening += new System.ComponentModel.CancelEventHandler(this.MenuListPhotos_Opening);
+            // 
+            // DeleteCheckedPhotos
+            // 
+            this.DeleteCheckedPhotos.Name = "DeleteCheckedPhotos";
+            this.DeleteCheckedPhotos.Size = new System.Drawing.Size(107, 22);
+            this.DeleteCheckedPhotos.Text = "&Delete";
+            this.DeleteCheckedPhotos.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // RemoveOnSave
             // 
             this.RemoveOnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.RemoveOnSave.AutoSize = true;
-            this.RemoveOnSave.Enabled = false;
             this.RemoveOnSave.Location = new System.Drawing.Point(12, 500);
             this.RemoveOnSave.Name = "RemoveOnSave";
             this.RemoveOnSave.Size = new System.Drawing.Size(117, 17);
@@ -230,17 +249,20 @@
             this.Controls.Add(this.TxtLogTitle);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.splitContainer1);
+            this.KeyPreview = true;
             this.Name = "LogProcessor";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Write Log Entry";
             this.Load += new System.EventHandler(this.LogProcessor_Load);
             this.Shown += new System.EventHandler(this.LogProcessor_Shown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.LogProcessor_KeyUp);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.MenuListPhotos.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
@@ -271,5 +293,7 @@
         private System.Windows.Forms.StatusStrip Statusbar;
         private System.Windows.Forms.ToolStripProgressBar UploadingProgress;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ContextMenuStrip MenuListPhotos;
+        private System.Windows.Forms.ToolStripMenuItem DeleteCheckedPhotos;
     }
 }

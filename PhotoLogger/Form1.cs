@@ -20,7 +20,7 @@ namespace PhotoLogger
         bool _running = false;
 
         Evernote.ENManager EN = null;
-        Twitter.Twitter TWITTER = null;
+        public Twitter.Twitter TWITTER = null;
 
         public Form1()
         {
@@ -117,10 +117,24 @@ namespace PhotoLogger
                 src.Save(savefile, System.Drawing.Imaging.ImageFormat.Png);
                 src.Dispose();
                 src = null;
+
+
                 if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
                 {
-                    PostTweet(savefile);
-
+                    MainWindowStatus.Text = @"Posting to twitter";
+                    try
+                    {
+                        TWITTER.PostMedia(savefile);
+                        MainWindowStatus.Text = @"";
+                    }
+                    catch (System.IO.FileNotFoundException ex)
+                    {
+                        MainWindowStatus.Text = ex.FileName+ @" not found";
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MainWindowStatus.Text = @"Post to Twitter failed (" + savefile+@")";
+                    }                
                 }
             }
                 
@@ -128,6 +142,21 @@ namespace PhotoLogger
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // Initialise twitter support
+            TWITTER = new Twitter.Twitter();
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
+            {
+                TWITTER.Initialise();
+                
+            }
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter == false)
+            {
+                TwitterAutoPostStatus.Text = @"Auto Post: Off*";
+                TWITTER.Inhibit = true;
+            }
+            else { TwitterAutoPostStatus.Text = @"Auto Post: On*";
+            TWITTER.Inhibit = false;
+            }
             
             if (PhotoLogger.Properties.Settings.Default.ENEnabled)
             {
@@ -190,7 +219,7 @@ namespace PhotoLogger
 
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings s = new Settings();
+            Settings s = new Settings(this);
             if (s.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
 
@@ -217,68 +246,55 @@ namespace PhotoLogger
         {
 
         }
-        static int twitterErrorCount = 0;
-        void PostTweet(string filepath)
-        {
-            if (TWITTER == null) {
-                return;
-            }
-            //try to load existing credentials
-            //PhotoLogger.Properties.Settings.Default.TwitterCredentials = (Tweetinvi.WebLogic.OAuthCredentials)nCred;
-            Tweetinvi.TwitterCredentials.SetCredentials(PhotoLogger.Properties.Settings.Default.TwitterCredentials);
-            try
-            {
-                System.Diagnostics.Debug.WriteLine(@"Checking logged in");
-                Tweetinvi.User.GetLoggedUser();
 
-                System.Diagnostics.Debug.WriteLine(@"Posting " + filepath);
-                Tweetinvi.Tweet.PublishTweet("test");
-                /*byte[] media = System.IO.File.ReadAllBytes(filepath);
-                Tweetinvi.Core.Interfaces.ITweet tweet = Tweetinvi.Tweet.CreateTweetWithMedia("", media);
-                tweet.Publish();
-                 */ 
-
-            }
-            catch (Tweetinvi.Core.Exceptions.TwitterNullCredentialsException ex)
-            {
-                if (twitterErrorCount > 2) {
-                    throw ex;
-                }
-                twitterErrorCount++;
-                Tweetinvi.Core.Interfaces.Credentials.ITemporaryCredentials tCred = Tweetinvi.CredentialsCreator.GenerateApplicationCredentials(
-                   TWITTER.GetConsumerKey(),
-                   TWITTER.GetSharedSecret());
-
-                string url = Tweetinvi.CredentialsCreator.GetAuthorizationURL(
-                    tCred
-                    );
-                System.Diagnostics.Process.Start(url);
-                TwitterCaptcha c = new TwitterCaptcha();
-                if (c.ShowDialog() == System.Windows.Forms.DialogResult.OK ) {
-                    System.Diagnostics.Debug.WriteLine(@"Authorising with twitter");
-                    Tweetinvi.Core.Interfaces.oAuth.IOAuthCredentials nCred = Tweetinvi.CredentialsCreator.GetCredentialsFromVerifierCode(c.CaptchaText,tCred);
-                    Tweetinvi.TwitterCredentials.SetCredentials(nCred);
-                    PhotoLogger.Properties.Settings.Default.TwitterCredentials = (Tweetinvi.WebLogic.OAuthCredentials) nCred;
-                    //PhotoLogger.Properties.Settings.Default.TwitterAccessToken = nCred.AccessToken;
-                    //PhotoLogger.Properties.Settings.Default.TwitterAccessSecret = nCred.AccessTokenSecret;
-                    PhotoLogger.Properties.Settings.Default.Save();
-                    PostTweet(filepath);//retry
-                }
-                else
-                {
-                    throw ex;
-                }
-            }
-            /*
-            byte[] media = System.IO.File.ReadAllBytes(filepath);
-            Tweetinvi.Core.Interfaces.ITweet tweet = Tweetinvi.Tweet.CreateTweetWithMedia("", media);
-            tweet.Publish();
-             */
-        }
 
         private void testTwitterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            PostTweet(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
+            //TWITTER.Post(@"Test " + DateTime.Now);
+            MainWindowStatus.Text = @"Posting to twitter";
+            try
+            {
+                //TWITTER.PostMedia(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
+                TWITTER.Post(@"Test tweet");
+                MainWindowStatus.Text = @"";
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                MainWindowStatus.Text = @"Not Posted";
+            }
+            catch (System.Exception ex)
+            {
+                MainWindowStatus.Text = @"Post to Twitter failed";
+            }
+            //PostTweet(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+
+        }
+
+        private void QuickActions_ButtonClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TwitterAutoPostStatus_Click(object sender, EventArgs e)
+        {
+            TWITTER.Inhibit = !TWITTER.Inhibit;
+            if (TWITTER.Inhibit)
+            {
+                TwitterAutoPostStatus.Text = @"Auto Post: Off";
+            }
+            else
+            {
+                TwitterAutoPostStatus.Text = @"Auto Post: On";
+            }
         }
 
 

@@ -18,7 +18,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ENEnabled" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ENNotebook" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -30,6 +30,9 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="TwitterCredentials" Type="Tweetinvi.WebLogic.OAuthCredentials" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TweetText" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

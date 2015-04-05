@@ -30,18 +30,20 @@
         {
             this.SettingsTabContainer = new System.Windows.Forms.TabControl();
             this.TabGeneralSettings = new System.Windows.Forms.TabPage();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.CheckAutoPostTwitter = new System.Windows.Forms.CheckBox();
+            this.BtnConfigureTwitter = new System.Windows.Forms.Button();
             this.TabEvernote = new System.Windows.Forms.TabPage();
             this.BtnLogoutEvernote = new System.Windows.Forms.Button();
             this.ENNotebookList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.CheckAutoPostTwitter = new System.Windows.Forms.CheckBox();
+            this.TxtTweetText = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.EvernoteEnabled = new System.Windows.Forms.CheckBox();
             this.SettingsTabContainer.SuspendLayout();
             this.TabGeneralSettings.SuspendLayout();
-            this.TabEvernote.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.TabEvernote.SuspendLayout();
             this.SuspendLayout();
             // 
             // SettingsTabContainer
@@ -65,6 +67,40 @@
             this.TabGeneralSettings.TabIndex = 0;
             this.TabGeneralSettings.Text = "General";
             this.TabGeneralSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.TxtTweetText);
+            this.groupBox1.Controls.Add(this.CheckAutoPostTwitter);
+            this.groupBox1.Controls.Add(this.BtnConfigureTwitter);
+            this.groupBox1.Location = new System.Drawing.Point(8, 6);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(523, 122);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Twitter";
+            // 
+            // CheckAutoPostTwitter
+            // 
+            this.CheckAutoPostTwitter.AutoSize = true;
+            this.CheckAutoPostTwitter.Location = new System.Drawing.Point(7, 20);
+            this.CheckAutoPostTwitter.Name = "CheckAutoPostTwitter";
+            this.CheckAutoPostTwitter.Size = new System.Drawing.Size(156, 17);
+            this.CheckAutoPostTwitter.TabIndex = 1;
+            this.CheckAutoPostTwitter.Text = "Auto Post Images to Twitter";
+            this.CheckAutoPostTwitter.UseVisualStyleBackColor = true;
+            this.CheckAutoPostTwitter.CheckedChanged += new System.EventHandler(this.CheckAutoPostTwitter_CheckedChanged);
+            // 
+            // BtnConfigureTwitter
+            // 
+            this.BtnConfigureTwitter.Location = new System.Drawing.Point(6, 46);
+            this.BtnConfigureTwitter.Name = "BtnConfigureTwitter";
+            this.BtnConfigureTwitter.Size = new System.Drawing.Size(75, 23);
+            this.BtnConfigureTwitter.TabIndex = 0;
+            this.BtnConfigureTwitter.Text = "Configure";
+            this.BtnConfigureTwitter.UseVisualStyleBackColor = true;
+            this.BtnConfigureTwitter.Click += new System.EventHandler(this.button1_Click);
             // 
             // TabEvernote
             // 
@@ -108,36 +144,23 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "NoteBook";
             // 
-            // groupBox1
+            // TxtTweetText
             // 
-            this.groupBox1.Controls.Add(this.CheckAutoPostTwitter);
-            this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Location = new System.Drawing.Point(8, 6);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(523, 100);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Twitter";
+            this.TxtTweetText.Location = new System.Drawing.Point(77, 77);
+            this.TxtTweetText.MaxLength = 80;
+            this.TxtTweetText.Name = "TxtTweetText";
+            this.TxtTweetText.Size = new System.Drawing.Size(422, 20);
+            this.TxtTweetText.TabIndex = 2;
+            this.TxtTweetText.TextChanged += new System.EventHandler(this.TxtTweetText_TextChanged);
             // 
-            // button1
+            // label2
             // 
-            this.button1.Location = new System.Drawing.Point(6, 46);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Configure";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // CheckAutoPostTwitter
-            // 
-            this.CheckAutoPostTwitter.AutoSize = true;
-            this.CheckAutoPostTwitter.Location = new System.Drawing.Point(7, 20);
-            this.CheckAutoPostTwitter.Name = "CheckAutoPostTwitter";
-            this.CheckAutoPostTwitter.Size = new System.Drawing.Size(156, 17);
-            this.CheckAutoPostTwitter.TabIndex = 1;
-            this.CheckAutoPostTwitter.Text = "Auto Post Images to Twitter";
-            this.CheckAutoPostTwitter.UseVisualStyleBackColor = true;
-            this.CheckAutoPostTwitter.CheckedChanged += new System.EventHandler(this.CheckAutoPostTwitter_CheckedChanged);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(7, 80);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Tweet Text:";
             // 
             // EvernoteEnabled
             // 
@@ -167,10 +190,10 @@
             this.Load += new System.EventHandler(this.Settings_Load);
             this.SettingsTabContainer.ResumeLayout(false);
             this.TabGeneralSettings.ResumeLayout(false);
-            this.TabEvernote.ResumeLayout(false);
-            this.TabEvernote.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.TabEvernote.ResumeLayout(false);
+            this.TabEvernote.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -185,7 +208,9 @@
         private System.Windows.Forms.CheckBox EvernoteEnabled;
         private System.Windows.Forms.Button BtnLogoutEvernote;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button BtnConfigureTwitter;
         private System.Windows.Forms.CheckBox CheckAutoPostTwitter;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox TxtTweetText;
     }
 }

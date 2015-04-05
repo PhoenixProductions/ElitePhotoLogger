@@ -37,13 +37,18 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testTwitterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.testTwitterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.MainWindowStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.TwitterAutoPostStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnControl
@@ -62,6 +67,7 @@
             this.fileSystemWatcher1.Filter = "*.bmp";
             this.fileSystemWatcher1.Path = "C:\\Users\\michael\\Pictures\\Frontier Developments\\Elite Dangerous";
             this.fileSystemWatcher1.SynchronizingObject = this;
+            this.fileSystemWatcher1.Changed += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Changed);
             this.fileSystemWatcher1.Created += new System.IO.FileSystemEventHandler(this.fileSystemWatcher1_Created);
             // 
             // timer1
@@ -93,15 +99,26 @@
             // processToolStripMenuItem
             // 
             this.processToolStripMenuItem.Name = "processToolStripMenuItem";
-            this.processToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.processToolStripMenuItem.Text = "&Write Log";
+            this.processToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.processToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.processToolStripMenuItem.Text = "&New Log Entry";
             this.processToolStripMenuItem.Click += new System.EventHandler(this.processToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.quitToolStripMenuItem.Text = "&Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // testTwitterToolStripMenuItem
+            // 
+            this.testTwitterToolStripMenuItem.Name = "testTwitterToolStripMenuItem";
+            this.testTwitterToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.testTwitterToolStripMenuItem.Text = "Test Twitter";
+            this.testTwitterToolStripMenuItem.Visible = false;
+            this.testTwitterToolStripMenuItem.Click += new System.EventHandler(this.testTwitterToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
             // 
@@ -129,18 +146,42 @@
             this.TrayMenu.Name = "TrayMenu";
             this.TrayMenu.Size = new System.Drawing.Size(61, 4);
             // 
-            // testTwitterToolStripMenuItem
+            // statusStrip1
             // 
-            this.testTwitterToolStripMenuItem.Name = "testTwitterToolStripMenuItem";
-            this.testTwitterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.testTwitterToolStripMenuItem.Text = "Test Twitter";
-            this.testTwitterToolStripMenuItem.Click += new System.EventHandler(this.testTwitterToolStripMenuItem_Click);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.MainWindowStatus,
+            this.TwitterAutoPostStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 109);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(372, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // MainWindowStatus
+            // 
+            this.MainWindowStatus.Name = "MainWindowStatus";
+            this.MainWindowStatus.Size = new System.Drawing.Size(0, 17);
+            // 
+            // TwitterAutoPostStatus
+            // 
+            this.TwitterAutoPostStatus.Name = "TwitterAutoPostStatus";
+            this.TwitterAutoPostStatus.Size = new System.Drawing.Size(81, 17);
+            this.TwitterAutoPostStatus.Text = "Auto Post: On";
+            this.TwitterAutoPostStatus.Click += new System.EventHandler(this.TwitterAutoPostStatus_Click);
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(245, 17);
+            this.toolStripStatusLabel1.Spring = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(372, 106);
+            this.ClientSize = new System.Drawing.Size(372, 131);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnControl);
             this.Controls.Add(this.menuStrip1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("Location", global::PhotoLogger.Properties.Settings.Default, "MainWindowStartLocation", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -154,6 +195,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,6 +217,10 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testTwitterToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel MainWindowStatus;
+        private System.Windows.Forms.ToolStripStatusLabel TwitterAutoPostStatus;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 

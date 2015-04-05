@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>evernote-cloud-sdk-windows</id>
+    <version>1.0.7</version>
+    <title>Evernote Cloud SDK for Windows</title>
+    <authors>Evernote Corp.</authors>
+    <owners>Evernote Corp.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Evernote Cloud SDK for Windows</description>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="SgmlReader" version="1.8.11" />
+        <dependency id="PreMailer.Net" version="1.2.7" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Accessibility" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

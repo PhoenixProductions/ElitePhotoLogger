@@ -50,6 +50,12 @@ namespace PhotoLogger
                 LogDatePicker.Value = first.Timestamp;
                 TxtLogTitle.Text = "Pilot's Log " + elitetime.ToString("D");
             }
+            else if (ListPhotos.Items.Count == 0 & TxtLogTitle.Text == "")
+            {
+                DateTime elitetime = DateTime.Now.AddYears(eliteyearadjust);
+                LogDatePicker.Value = elitetime;
+                TxtLogTitle.Text = "Pilot's Log " + elitetime.ToString("D");
+            }
             if (ListPhotos.Items.Count > 0)
             {
                 ListPhotos.SelectedIndex = 0;
@@ -69,8 +75,10 @@ namespace PhotoLogger
                     System.Diagnostics.Debug.Write(file.Name);
                     PhotoListItem pi = new PhotoListItem(file.FullName, file.LastWriteTime);
                     ListPhotos.Items.Add(pi);
-
+                
                 }
+                i = null;
+                files = null;
             }
             ListPhotos.EndUpdate();
             ListPhotos.DisplayMember = "Timestamp";
@@ -78,8 +86,16 @@ namespace PhotoLogger
         }
         void DisplayItem(PhotoListItem item)
         {
-            //System.Drawing.Image i = System.Drawing.Image.FromFile(item.Fullpath);
-            pictureBox1.Load(item.Fullpath);
+            System.Drawing.Image i;
+            byte[] imageBytes = System.IO.File.ReadAllBytes(item.Fullpath);
+            //= System.Drawing.Image.FromFile(item.Fullpath);
+            using (System.IO.MemoryStream ms = new MemoryStream(imageBytes))
+            {
+                i = System.Drawing.Image.FromStream(ms);
+                pictureBox1.Image = i;
+            }
+            
+            //pictureBox1.Load(item.Fullpath);
             //i.Dispose();
             //i = null;
         }
@@ -134,7 +150,7 @@ namespace PhotoLogger
                 this.DialogResult = System.Windows.Forms.DialogResult.OK;
                 this.Close();
             }
-            /*if (RemoveOnSave.Checked) {
+            if (RemoveOnSave.Checked) {
                 foreach (PhotoListItem i in ListPhotos.Items)
                 {
                     try
@@ -143,11 +159,11 @@ namespace PhotoLogger
                     }
                     catch (IOException e)
                     {
-                        throw e;
+                        System.Diagnostics.Debug.WriteLine(e.Message);
                     }
                 }
                 UpdateListOfPhotos();
-            }*/
+            }
 
 
         }
@@ -204,6 +220,50 @@ namespace PhotoLogger
             this.BtnSaveLogEntry.Enabled = true;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListPhotos.BeginUpdate();
+            foreach (PhotoListItem i in ListPhotos.CheckedItems)
+            {
+                if (i.Fullpath.Equals(pictureBox1.ImageLocation))
+                {
+                    pictureBox1.Image = null;
+                }
+                 
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine(@"Removing " + i.Fullpath);
+                    File.Delete(i.Fullpath);
+                }
+                catch (IOException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(@"Failed to remove: " +ex.Message);
+                }
+            }
+            UpdateListOfPhotos();
+            ListPhotos.EndUpdate(); ;
+        }
+
+        private void MenuListPhotos_Opening(object sender, CancelEventArgs e)
+        {
+            if (ListPhotos.CheckedItems.Count == 0)
+            {
+                DeleteCheckedPhotos.Visible = false;
+            }
+            else { DeleteCheckedPhotos.Visible = true;  }
+        }
+
+
+
+        private void LogProcessor_KeyUp(object sender, KeyEventArgs e)
+        {
+            //System.Diagnostics.Debug.WriteLine(e.KeyCode);
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
 
 
