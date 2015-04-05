@@ -154,3 +154,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/PhotoLogger/Twitter/Twitter.cs
+PhotoLogger.userprefs

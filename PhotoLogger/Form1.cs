@@ -20,6 +20,7 @@ namespace PhotoLogger
         bool _running = false;
 
         Evernote.ENManager EN = null;
+        public Twitter.Twitter TWITTER = null;
 
         public Form1()
         {
@@ -122,9 +123,29 @@ namespace PhotoLogger
             if (convert) {
                 string convertedFilename = System.IO.Path.GetFileNameWithoutExtension(e.FullPath) + ".png";
                 System.Drawing.Image src = System.Drawing.Image.FromFile(e.FullPath);
-                src.Save(System.IO.Path.Combine(_workingdir, convertedFilename), System.Drawing.Imaging.ImageFormat.Png);
+                string savefile = System.IO.Path.Combine(_workingdir, convertedFilename);
+                src.Save(savefile, System.Drawing.Imaging.ImageFormat.Png);
                 src.Dispose();
                 src = null;
+
+
+                if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
+                {
+                    MainWindowStatus.Text = @"Posting to twitter";
+                    try
+                    {
+                        TWITTER.PostMedia(savefile);
+                        MainWindowStatus.Text = @"";
+                    }
+                    catch (System.IO.FileNotFoundException ex)
+                    {
+                        MainWindowStatus.Text = ex.FileName+ @" not found";
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MainWindowStatus.Text = @"Post to Twitter failed (" + savefile+@")";
+                    }                
+                }
             }
                 
         }
@@ -195,20 +216,32 @@ namespace PhotoLogger
 		}
         private void Form1_Load(object sender, EventArgs e)
         {
+			if (PhotoLogger.Properties.Settings.Default.ENEnabled)
+			{
+				System.Diagnostics.Debug.WriteLine("Enabling evernote");
+				EN = Evernote.ENManager.Initialise((Evernote.ENManager.EverNoteMode)PhotoLogger.Properties.Settings.Default.ENMode);
 
+			}
+			else
+			{
+				EN = Evernote.ENManager.Initialise(Evernote.ENManager.EverNoteMode.Disabled);
+			}
 
-
-            if (PhotoLogger.Properties.Settings.Default.ENEnabled)
+			// Initialise twitter support
+            TWITTER = new Twitter.Twitter();
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter)
             {
-                System.Diagnostics.Debug.WriteLine("Enabling evernote");
-                EN = Evernote.ENManager.Initialise((Evernote.ENManager.EverNoteMode)PhotoLogger.Properties.Settings.Default.ENMode);
-                    
+                TWITTER.Initialise();
+                
             }
-            else
+            if (PhotoLogger.Properties.Settings.Default.AutoPostTwitter == false)
             {
-                EN = Evernote.ENManager.Initialise(Evernote.ENManager.EverNoteMode.Disabled);
+                TwitterAutoPostStatus.Text = @"Auto Post: Off*";
+                TWITTER.Inhibit = true;
             }
-            
+            else { TwitterAutoPostStatus.Text = @"Auto Post: On*";
+            	TWITTER.Inhibit = false;
+            }
 			validateSettings();
         }
 
@@ -220,7 +253,7 @@ namespace PhotoLogger
 
         private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings s = new Settings();
+            Settings s = new Settings(this);
             if (s.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
 
@@ -246,6 +279,56 @@ namespace PhotoLogger
         void CleanUp()
         {
 
+        }
+
+
+        private void testTwitterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TWITTER.Post(@"Test " + DateTime.Now);
+            MainWindowStatus.Text = @"Posting to twitter";
+            try
+            {
+                //TWITTER.PostMedia(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
+                TWITTER.Post(@"Test tweet");
+                MainWindowStatus.Text = @"";
+            }
+            catch (System.IO.FileNotFoundException ex)
+            {
+                MainWindowStatus.Text = @"Not Posted";
+            }
+            catch (System.Exception ex)
+            {
+                MainWindowStatus.Text = @"Post to Twitter failed";
+            }
+            //PostTweet(@"C:\Users\michael\Documents\FlightLog\input\Screenshot_0058.png");
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void fileSystemWatcher1_Changed(object sender, System.IO.FileSystemEventArgs e)
+        {
+
+        }
+
+        private void QuickActions_ButtonClick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void TwitterAutoPostStatus_Click(object sender, EventArgs e)
+        {
+            TWITTER.Inhibit = !TWITTER.Inhibit;
+            if (TWITTER.Inhibit)
+            {
+                TwitterAutoPostStatus.Text = @"Auto Post: Off";
+            }
+            else
+            {
+                TwitterAutoPostStatus.Text = @"Auto Post: On";
+            }
         }
 
 

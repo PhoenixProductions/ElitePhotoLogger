@@ -12,7 +12,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="ENMode" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="ENNoteStoreUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -25,6 +25,15 @@
     </Setting>
     <Setting Name="MainWindowStartLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="AutoPostTwitter" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TwitterCredentials" Type="Tweetinvi.WebLogic.OAuthCredentials" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TweetText" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

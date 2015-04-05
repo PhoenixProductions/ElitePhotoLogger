@@ -61,7 +61,7 @@ namespace PhotoLogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public int ENMode {
             get {
                 return ((int)(this["ENMode"]));
@@ -116,6 +116,41 @@ namespace PhotoLogger.Properties {
             }
             set {
                 this["MainWindowStartLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoPostTwitter {
+            get {
+                return ((bool)(this["AutoPostTwitter"]));
+            }
+            set {
+                this["AutoPostTwitter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::Tweetinvi.WebLogic.OAuthCredentials TwitterCredentials {
+            get {
+                return ((global::Tweetinvi.WebLogic.OAuthCredentials)(this["TwitterCredentials"]));
+            }
+            set {
+                this["TwitterCredentials"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TweetText {
+            get {
+                return ((string)(this["TweetText"]));
+            }
+            set {
+                this["TweetText"] = value;
             }
         }
     }
