@@ -5,7 +5,8 @@ ENDevTokens.cs
 *.suo
 *.user
 *.sln.docstates
-
+*.userprefs
+:w
 # Build results
 
 [Dd]ebug/
