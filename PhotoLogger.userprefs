@@ -1,4 +1,4 @@
-﻿<Properties StartupItem="PhotoLogger/PhotoLogger.csproj">
+﻿<Properties StartupItem="PhotoLogger\PhotoLogger.csproj" GitUserInfo="UsingGIT">
   <DisabledProjects>
     <String>PhotoLoggerInstall/PhotoLoggerInstall.isproj</String>
   </DisabledProjects>
