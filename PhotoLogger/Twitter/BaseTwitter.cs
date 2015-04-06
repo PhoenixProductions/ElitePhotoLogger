@@ -13,28 +13,40 @@ namespace PhotoLogger.Twitter
 
         bool _initialised = false;
         bool _inhibit = false;
+		bool _loggedin = false;
 
         public bool Inhibit
         {
             get { return _inhibit; }
             set { _inhibit = value; }
         }
+		public bool LoggedIn {
+			get { return _loggedin; }
+		}
         public void Initialise()
         {
             System.Diagnostics.Debug.WriteLine(@"Initialising twitter sub system");
             Tweetinvi.TwitterCredentials.SetCredentials(PhotoLogger.Properties.Settings.Default.TwitterCredentials);
+			if (PhotoLogger.Properties.Settings.Default.TwitterCredentials == null) {
+				System.Diagnostics.Debug.WriteLine (@"No credentials");
+				_initialised = false;
+				return;
+			}
             try
             {
                 System.Diagnostics.Debug.WriteLine(@"Checking logged in");
                 Tweetinvi.User.GetLoggedUser();
+				_loggedin = true;
                 _initialised = true;
                 System.Diagnostics.Debug.WriteLine(@"Initialising twitter sub system...ok");
             }
             catch (Tweetinvi.Core.Exceptions.TwitterNullCredentialsException ex)
             {
+				_loggedin = false;
                 if (twitterErrorCount > 2)
                 {
                     _initialised = false;
+
                     throw ex;
                 }
                 twitterErrorCount++;
@@ -47,6 +59,7 @@ namespace PhotoLogger.Twitter
 
         public bool Authorise()
         {
+			System.Diagnostics.Debug.WriteLine (@"Authorising");
             Tweetinvi.Core.Interfaces.Credentials.ITemporaryCredentials tCred = Tweetinvi.CredentialsCreator.GenerateApplicationCredentials(
                    this.GetConsumerKey(),
                    this.GetSharedSecret());
@@ -63,11 +76,22 @@ namespace PhotoLogger.Twitter
                 Tweetinvi.TwitterCredentials.SetCredentials(nCred);
                 PhotoLogger.Properties.Settings.Default.TwitterCredentials = (Tweetinvi.WebLogic.OAuthCredentials)nCred;
                 PhotoLogger.Properties.Settings.Default.Save();
+				System.Diagnostics.Debug.WriteLine (@"Authorised");
+				_loggedin = true;
                 return true;
             }
+			System.Diagnostics.Debug.WriteLine (@"Not Authorised");
             return false;
         }
-
+		/// <summary>
+		/// Revoke Twitter authorisation
+		/// </summary>
+		public void DeAuthorise() {
+			_loggedin = false;
+			PhotoLogger.Properties.Settings.Default.TwitterCredentials = null;
+			Tweetinvi.TwitterCredentials.SetCredentials (null);
+			PhotoLogger.Properties.Settings.Default.Save();
+		}
         abstract public string GetConsumerKey();
             /*
         {

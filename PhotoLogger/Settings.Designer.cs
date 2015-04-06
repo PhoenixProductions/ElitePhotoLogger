@@ -39,6 +39,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.TxtTweetText = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+			this.twitterStatus = new System.Windows.Forms.Label ();
             this.EvernoteEnabled = new System.Windows.Forms.CheckBox();
             this.SettingsTabContainer.SuspendLayout();
             this.TabGeneralSettings.SuspendLayout();
@@ -74,6 +75,7 @@
             this.groupBox1.Controls.Add(this.TxtTweetText);
             this.groupBox1.Controls.Add(this.CheckAutoPostTwitter);
             this.groupBox1.Controls.Add(this.BtnConfigureTwitter);
+			this.groupBox1.Controls.Add (this.twitterStatus);
             this.groupBox1.Location = new System.Drawing.Point(8, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(523, 122);
@@ -143,6 +145,14 @@
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "NoteBook";
+			//
+			// twitterStatus
+			//
+			this.twitterStatus.AutoSize = true;
+			this.twitterStatus.Location = new System.Drawing.Point(85, 48);
+			this.twitterStatus.Name = "twitterStatus";
+			this.twitterStatus.Size = new System.Drawing.Size (55, 13);
+			this.twitterStatus.Text = "<status>";
             // 
             // TxtTweetText
             // 
@@ -212,5 +222,6 @@
         private System.Windows.Forms.CheckBox CheckAutoPostTwitter;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox TxtTweetText;
+		private System.Windows.Forms.Label twitterStatus;
     }
 }

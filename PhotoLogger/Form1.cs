@@ -26,8 +26,12 @@ namespace PhotoLogger
         {
             InitializeComponent();
             //watch for settings changing
+			//PhotoLogger.Properties.Settings.Default.SettingsLoaded+= new System.Configuration.SettingsLoadedEventHandler(this.SettingsLoaded);
             
         }
+		void SettingsLoaded(object o, System.Configuration.SettingsLoadedEventArgs e) {
+			System.Diagnostics.Debug.WriteLine(e.Provider.ToString ());
+		}
         void toggle()
         {
 
